@@ -1,5 +1,5 @@
 image:
-  repository: acraifactorydev<suffix>.azurecr.io/ai-summarizer
+  repository: acraifactorydev08hf6.azurecr.io/ai-summarizer
   tag: "0.1.0"
 replicaCount: 2
 resources:
