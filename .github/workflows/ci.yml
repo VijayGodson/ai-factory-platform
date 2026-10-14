@@ -25,7 +25,7 @@ jobs:
         run: docker build -t ai-summarizer:${{ github.sha }} ./app
 
       - name: Scan image (governance gate)
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ai-summarizer:${{ github.sha }}
           severity: HIGH,CRITICAL
