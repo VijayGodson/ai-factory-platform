@@ -15,6 +15,6 @@ env:
     valueFrom:
       secretKeyRef:
         name: ai-summarizer-secret
-        key: azure-openai-key
+        key: AZURE_OPENAI_KEY
   - name: AZURE_OPENAI_ENDPOINT
     value: "https://aoai-ai-factory-dev.openai.azure.com/"
