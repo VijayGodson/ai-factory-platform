@@ -1,0 +1,48 @@
+name: ci
+on:
+  pull_request: { branches: [main] }
+  push: { branches: [main] }
+
+jobs:
+  build-test-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Install deps & run unit tests
+        run: |
+          cd app
+          pip install -r requirements.txt pytest
+          pytest -q
+
+      - name: Build image
+        run: docker build -t ai-summarizer:${{ github.sha }} ./app
+
+      - name: Scan image (governance gate)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ai-summarizer:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+
+      - name: Azure login (OIDC)
+        if: github.ref == 'refs/heads/main'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Push to ACR
+        if: github.ref == 'refs/heads/main'
+        run: |
+          az acr login --name acraifactorydev<suffix>
+          docker tag ai-summarizer:${{ github.sha }} acraifactorydev<suffix>.azurecr.io/ai-summarizer:${{ github.sha }}
+          docker push acraifactorydev<suffix>.azurecr.io/ai-summarizer:${{ github.sha }}
+
