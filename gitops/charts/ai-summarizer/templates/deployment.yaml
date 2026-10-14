@@ -13,6 +13,14 @@ spec:
         - name: ai-summarizer
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports: [{ containerPort: 8000 }]
+          env:
+            - name: AZURE_OPENAI_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ai-summarizer-secret
+                  key: AZURE_OPENAI_KEY
+            - name: AZURE_OPENAI_ENDPOINT
+              value: "https://aoai-ai-factory-dev.openai.azure.com/"
           resources: {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe: { httpGet: { path: /health, port: 8000 } }
           readinessProbe: { httpGet: { path: /health, port: 8000 } }
