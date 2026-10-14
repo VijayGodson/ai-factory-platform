@@ -21,6 +21,12 @@ jobs:
           pip install -r requirements.txt pytest
           pytest -q
 
+      - name: Run tests
+        env:
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+        run: |
+          pytest
+
       - name: Build image
         run: docker build -t ai-summarizer:${{ github.sha }} ./app
 
