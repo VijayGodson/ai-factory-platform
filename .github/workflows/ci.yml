@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
+        with:
+          python-version: "3.12"
 
       - name: Install deps & run unit tests
         run: |
@@ -48,7 +49,6 @@ jobs:
       - name: Push to ACR
         if: github.ref == 'refs/heads/main'
         run: |
-          az acr login --name acraifactorydev<suffix>
-          docker tag ai-summarizer:${{ github.sha }} acraifactorydev<suffix>.azurecr.io/ai-summarizer:${{ github.sha }}
-          docker push acraifactorydev<suffix>.azurecr.io/ai-summarizer:${{ github.sha }}
-
+          az acr login --name acraifactorydev08hf6
+          docker tag ai-summarizer:${{ github.sha }} acraifactorydev08hf6.azurecr.io/ai-summarizer:${{ github.sha }}
+          docker push acraifactorydev08hf6.azurecr.io/ai-summarizer:${{ github.sha }}
